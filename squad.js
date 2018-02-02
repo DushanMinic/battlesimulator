@@ -3,7 +3,7 @@ const Soldier = require('./soldier');
 const { geometricAverage, generateRandomNumber } = require('./helperFunctions');
 
 class Squad {
-  constructor(strategy, numberOfUnits = generateRandomNumber(5, 10)) {
+  constructor(strategy, numberOfUnits) {
     if (numberOfUnits < 5 || numberOfUnits > 10) {
       throw new Error('Squad units number must be between 5 and 10');
     }
@@ -26,13 +26,6 @@ class Squad {
   calculateDamage() {
     return this.unitList
       .reduce((total, current) => total + current.calculateDamage(), 0);
-  }
-
-  addUnit(unit) {
-    if (!(unit instanceof Vehicle) && !(unit instanceof Soldier)) {
-      throw new Error('Unit must be Soldier or Vehicle');
-    }
-    this.unitList.push(unit);
   }
 }
 
