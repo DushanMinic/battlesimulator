@@ -2,9 +2,12 @@ const Unit = require('./unit');
 const { generateRandomNumber } = require('./helperFunctions');
 
 class Soldier extends Unit {
-  constructor(recharge, experience) {
+  constructor(recharge) {
+    if (recharge < 100 || recharge > 2000) {
+      throw new Error('Soldier recharge must be between 100 and 2000');
+    }
     super(recharge);
-    this.experience = experience;
+    this.experience = 0;
   }
 
   calculateAttack() {
