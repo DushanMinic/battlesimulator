@@ -26,6 +26,7 @@ class Army {
   }
 }
 
-console.log(require('util').inspect(new Army('random', 5, 6), { colors: true, depth: null }));
+const newArmy = new Army('random', 5, 6);
+console.log(require('util').inspect(newArmy, { colors: true, depth: null }));
 
 module.exports = Army;

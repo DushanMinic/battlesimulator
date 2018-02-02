@@ -4,9 +4,14 @@ const { geometricAverage, generateRandomNumber } = require('./helperFunctions');
 
 class Squad {
   constructor(strategy, numberOfUnits) {
+    if (!Number.isInteger(numberOfUnits)) {
+      throw new Error('Number of units must be an integer');
+    }
+
     if (numberOfUnits < 5 || numberOfUnits > 10) {
       throw new Error('Squad units number must be between 5 and 10');
     }
+
     this.strategy = strategy;
     this.unitList = [];
 
