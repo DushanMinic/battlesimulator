@@ -1,15 +1,19 @@
 const Vehicle = require('./vehicle');
 const Soldier = require('./soldier');
-const { geometricAverage } = require('./helperFunctions');
+const { geometricAverage, generateRandomNumber } = require('./helperFunctions');
 
 class Squad {
-  constructor(strategy) {
-    const allowedStrategies = ['random', 'weakest', 'strongest'];
-    if (!allowedStrategies.includes(strategy)) {
-      throw new Error('Invalid strategy! Choose one between: random, weakest, strongest');
+  constructor(strategy, numberOfUnits = generateRandomNumber(5, 10)) {
+    if (numberOfUnits < 5 || numberOfUnits > 10) {
+      throw new Error('Squad units number must be between 5 and 10');
     }
     this.strategy = strategy;
     this.unitList = [];
+
+    for (let i = 0; i < numberOfUnits; i += 1) {
+      const randomUnit = generateRandomNumber(1, 2) === 1 ? new Vehicle() : new Soldier();
+      this.unitList.push(randomUnit);
+    }
   }
 
   calculateAttack() {
@@ -31,18 +35,5 @@ class Squad {
     this.unitList.push(unit);
   }
 }
-
-const newVehicle = new Vehicle(1200, 3);
-newVehicle.addVehicleOperator(230, 0);
-newVehicle.addVehicleOperator(150, 0);
-newVehicle.addVehicleOperator(1500, 0);
-
-const newSoldier = new Soldier(123);
-
-const newSquad = new Squad('weakest');
-newSquad.addUnit(newVehicle);
-newSquad.addUnit(newSoldier);
-console.log(newSquad.calculateAttack());
-console.log(newSquad.calculateDamage());
 
 module.exports = Squad;

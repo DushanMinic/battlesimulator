@@ -1,9 +1,9 @@
 const Unit = require('./unit');
 const Soldier = require('./soldier');
-const { geometricAverage } = require('./helperFunctions');
+const { geometricAverage, generateRandomNumber } = require('./helperFunctions');
 
 class Vehicle extends Unit {
-  constructor(recharge, numberOfOperators) {
+  constructor(numberOfOperators = generateRandomNumber(1, 3), recharge = generateRandomNumber(1000, 2000)) {
     if (recharge < 1000 || recharge > 2000) {
       throw new Error('Vehicle recharge must be between 1000 and 2000');
     }
@@ -12,22 +12,16 @@ class Vehicle extends Unit {
     }
 
     super(recharge);
-    this.numberOfOperators = numberOfOperators;
-    this.baseHealth = this.health;
     this.vehicleOperators = [];
-  }
 
-  // Adds new vehicle operator
-  addVehicleOperator(recharge) {
-    if (this.vehicleOperators.length === this.numberOfOperators) {
-      throw new Error('Vehicle operators limit reached');
+    // Add vehicle operators
+    for (let i = 0; i < numberOfOperators; i += 1) {
+      this.vehicleOperators.push(new Soldier());
     }
-    this.vehicleOperators.push(new Soldier(recharge));
 
-    const averageOperatorsHP = this.vehicleOperators
+    this.averageOperatorsHP = this.vehicleOperators
       .reduce((total, operator) => total + operator.health, 0) / this.vehicleOperators.length;
-
-    this.health = averageOperatorsHP + this.baseHealth;
+    this.health += this.averageOperatorsHP;
   }
 
   // Calculates vehicle attack success probability

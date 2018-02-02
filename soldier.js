@@ -2,7 +2,7 @@ const Unit = require('./unit');
 const { generateRandomNumber } = require('./helperFunctions');
 
 class Soldier extends Unit {
-  constructor(recharge) {
+  constructor(recharge = generateRandomNumber(100, 2000)) {
     if (recharge < 100 || recharge > 2000) {
       throw new Error('Soldier recharge must be between 100 and 2000');
     }
