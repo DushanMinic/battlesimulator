@@ -32,6 +32,29 @@ class Squad {
     return this.unitList
       .reduce((total, current) => total + current.calculateDamage(), 0);
   }
+
+  getHit(totalDamage) {
+    const damagePerUnit = totalDamage / this.unitList.length;
+
+    for (let i = this.unitList.length - 1; i >= 0; i -= 1) {
+      const unit = this.unitList[i];
+      // Decrement units health
+      unit.getHit(damagePerUnit);
+      // Remove unit if it has no health points
+      if (!unit.isActive()) {
+        this.unitList.splice(i, 1);
+      }
+    }
+  }
 }
+
+const newSquad = new Squad('strongest', 5)
+newSquad.getHit(400); // 20hp
+newSquad.getHit(95);
+newSquad.getHit(2);
+newSquad.getHit(20);
+newSquad.getHit(20);
+newSquad.getHit(20);
+// newSquad.getHit(400);
 
 module.exports = Squad;

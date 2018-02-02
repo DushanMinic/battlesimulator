@@ -17,6 +17,14 @@ class Soldier extends Unit {
   calculateDamage() {
     return 0.05 + this.experience / 100;
   }
+
+  getHit(totalDamage) {
+    this.health -= totalDamage;
+  }
+
+  isActive() {
+    return this.health > 0;
+  }
 }
 
 module.exports = Soldier;
