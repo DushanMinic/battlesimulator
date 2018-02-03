@@ -27,7 +27,9 @@ class Soldier extends Unit {
   }
 
   increaseSoldierExperience() {
-    this.experience += 1;
+    if (this.experience < 50) {
+      this.experience += 1;
+    }
   }
 }
 

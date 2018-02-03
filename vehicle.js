@@ -40,16 +40,16 @@ class Vehicle extends Unit {
   }
 
   getHit(totalDamage) {
-    const damageToVehicle = Math.round(totalDamage * 30 / 100);
-    const damageToUnluckyGuy = Math.round(totalDamage * 50 / 100);
+    const damageToVehicle = totalDamage * 30 / 100;
+    const damageToUnluckyGuy = totalDamage * 50 / 100;
 
     // If there is only 1 vehicle operator, deal only damage to it
     if (this.vehicleOperators.length === 1) {
-      const restOfTheDamage = Math.round(totalDamage * 20 / 100);
+      const restOfTheDamage = totalDamage * 20 / 100;
       this.health -= damageToVehicle + restOfTheDamage;
       this.vehicleOperators[0].health -= damageToUnluckyGuy;
     } else {
-      const restOfTheDamagePerOperator = Math.round(totalDamage * 20 / 100 / (this.vehicleOperators.length - 1));
+      const restOfTheDamagePerOperator = totalDamage * 20 / 100 / (this.vehicleOperators.length - 1);
       const unluckyGuyIndex = generateRandomNumber(0, this.vehicleOperators.length - 1);
 
       for (let i = 0; i < this.vehicleOperators.length; i += 1) {
@@ -70,18 +70,8 @@ class Vehicle extends Unit {
   }
 
   increaseSoldierExperience() {
-    this.vehicleOperators.forEach(unit => unit.experience += 1);
+    this.vehicleOperators.forEach(unit => unit.increaseSoldierExperience());
   }
 }
-
-const newVehicle = new Vehicle(3);
-// console.log(require('util').inspect(newVehicle.calculateDamage(), { colors: true, depth: null }));
-newVehicle.increaseSoldierExperience();
-newVehicle.increaseSoldierExperience();
-newVehicle.increaseSoldierExperience();
-newVehicle.increaseSoldierExperience();
-
-// console.log(require('util').inspect(newVehicle.calculateDamage(), { colors: true, depth: null }));
-
 
 module.exports = Vehicle;

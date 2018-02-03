@@ -18,6 +18,7 @@ class Battlefield {
         totalSquads.push(...currentArmy.squads);
         return totalSquads;
       }, []);
+
   }
 
   startSimulator() {
@@ -25,12 +26,14 @@ class Battlefield {
 
     while (!this.victoryCondition()) {
       this.squads = this.squads
-        .sort((currentSquad, nextSquad) => currentSquad.timeLeftForAttack - nextSquad.timeLeftForAttack);
+        .sort((currentSquad, nextSquad) => currentSquad.getSquadTimeLeftToAttack() - nextSquad.getSquadTimeLeftToAttack());
 
       const [firstSquadToAttack, ...restOfTheSquads] = this.squads;
       const enemySquads = restOfTheSquads.filter(squad => firstSquadToAttack.armyId !== squad.armyId);
       // for testing purposes only, until strategies implemented
       const [randomEnemy] = enemySquads;
+
+      const testArmy = this.squads.filter(squad => squad.armyId === 3).length;
 
       if (firstSquadToAttack.calculateAttack() > randomEnemy.calculateAttack()) {
         // Apply damage to the enemy Squad
@@ -40,19 +43,20 @@ class Battlefield {
         firstSquadToAttack.increaseSquadExperience();
       }
 
-      // Decrease the recharge time of the rest of the Squads by the recharge time of Squad that was attacking
-      restOfTheSquads.forEach(squad => squad.timeLeftForAttack -= firstSquadToAttack.timeLeftForAttack);
-      firstSquadToAttack.timeLeftForAttack = firstSquadToAttack.rechargeTime();
+      // Decrease the time to attack of the rest of the Squads by the recharge time of Squad that was attacking
+      const passedTime = firstSquadToAttack.getSquadTimeLeftToAttack();
+      restOfTheSquads.forEach(squad => squad.decreaseTimeLeftToAttack(passedTime));
+      // attacking squad should reset time left to attack
+      firstSquadToAttack.resetTimeLeftToAttack();
 
       // Filter defeated Squads out of the Battlefield
       this.squads = this.squads.filter(squad => squad.isActive());
 
       numberOfTurns++;
-      this.victoryCondition();
     }
-    console.log(`Number of turns: ${numberOfTurns}`);
-    const [winnerArmy] = this.squads;
-    console.log(`THE WINNER IS ARMY WITH ID OF: ${winnerArmy.armyId}`);
+    console.log(`Number of turns taken: ${numberOfTurns}`);
+    const [{ armyId }] = this.squads;
+    console.log(`THE WINNER IS ARMY WITH ID OF: ${armyId}`);
   }
 
   victoryCondition() {
@@ -62,8 +66,8 @@ class Battlefield {
 }
 
 const battleField = new Battlefield(
-  new Army('weakest', 5, 7),
-  new Army('strongest', 5, 5, 6),
+  new Army('weakest', 5),
+  new Army('weakest', 1),
   new Army('strongest', 10, 10, 10, 10, 10),
 );
 

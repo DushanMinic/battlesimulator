@@ -20,12 +20,11 @@ class Squad {
       this.unitList.push(randomUnit);
     }
 
-    this.timeLeftForAttack = this.rechargeTime();
   }
 
   calculateAttack() {
     const squadProductAttack = this.unitList
-      .reduce((total, current) => total + current.calculateAttack(), 0);
+      .reduce((total, current) => total * current.calculateAttack(), 1);
 
     return geometricAverage(squadProductAttack, this.unitList.length);
   }
@@ -53,10 +52,18 @@ class Squad {
     return this.unitList.length > 0;
   }
 
-  rechargeTime() {
+  decreaseTimeLeftToAttack(passedTime) {
+    this.unitList.forEach(unit => unit.timeLeftToAttack -= passedTime);
+  }
+
+  resetTimeLeftToAttack() {
+    this.unitList.forEach(unit => unit.timeLeftToAttack = unit.recharge)
+  }
+
+  getSquadTimeLeftToAttack() {
     const [slowestTime] = this.unitList
-      .sort((current, next) => next.recharge - current.recharge);
-    return slowestTime.recharge;
+      .sort((current, next) => next.timeLeftToAttack - current.timeLeftToAttack);
+    return slowestTime.timeLeftToAttack;
   }
 
   increaseSquadExperience() {
