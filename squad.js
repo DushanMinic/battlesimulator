@@ -46,15 +46,16 @@ class Squad {
       }
     }
   }
+
+  increaseSquadExperience() {
+    this.unitList.forEach(unit => unit.increaseSoldierExperience());
+  }
 }
 
 const newSquad = new Squad('strongest', 5)
-newSquad.getHit(400); // 20hp
-newSquad.getHit(95);
-newSquad.getHit(2);
-newSquad.getHit(20);
-newSquad.getHit(20);
-newSquad.getHit(20);
-// newSquad.getHit(400);
+console.log(require('util').inspect(newSquad, { colors: true, depth: null }));
+newSquad.increaseSquadExperience();
+console.log(require('util').inspect(newSquad, { colors: true, depth: null }));
+
 
 module.exports = Squad;

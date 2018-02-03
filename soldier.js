@@ -25,6 +25,10 @@ class Soldier extends Unit {
   isActive() {
     return this.health > 0;
   }
+
+  increaseSoldierExperience() {
+    this.experience += 1;
+  }
 }
 
 module.exports = Soldier;

@@ -68,21 +68,20 @@ class Vehicle extends Unit {
       }
     }
   }
+
+  increaseSoldierExperience() {
+    this.vehicleOperators.forEach(unit => unit.experience += 1);
+  }
 }
 
-const newVehicle = new Vehicle(1);
-console.log(require('util').inspect(newVehicle, { colors: true, depth: null }));
+const newVehicle = new Vehicle(3);
+// console.log(require('util').inspect(newVehicle.calculateDamage(), { colors: true, depth: null }));
+newVehicle.increaseSoldierExperience();
+newVehicle.increaseSoldierExperience();
+newVehicle.increaseSoldierExperience();
+newVehicle.increaseSoldierExperience();
 
-newVehicle.getHit(100);
-console.log(newVehicle.isActive());
-console.log(require('util').inspect(newVehicle, { colors: true, depth: null }));
-
-newVehicle.getHit(100);
-console.log(newVehicle.isActive());
-console.log(require('util').inspect(newVehicle, { colors: true, depth: null }));
-// newVehicle.getHit(50);
-// newVehicle.getHit(50);
-// console.log(require('util').inspect(newVehicle, { colors: true, depth: null }));
+// console.log(require('util').inspect(newVehicle.calculateDamage(), { colors: true, depth: null }));
 
 
 module.exports = Vehicle;

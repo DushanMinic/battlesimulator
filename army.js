@@ -1,6 +1,4 @@
 const Squad = require('./squad');
-const Vehicle = require('./vehicle');
-const Soldier = require('./soldier');
 const { generateRandomNumber } = require('./helperFunctions');
 
 class Army {
@@ -27,6 +25,6 @@ class Army {
 }
 
 const newArmy = new Army('random', 5, 6);
-console.log(require('util').inspect(newArmy, { colors: true, depth: null }));
+// console.log(require('util').inspect(newArmy, { colors: true, depth: null }));
 
 module.exports = Army;
