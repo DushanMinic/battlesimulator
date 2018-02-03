@@ -19,6 +19,8 @@ class Squad {
       const randomUnit = generateRandomNumber(1, 2) === 1 ? new Vehicle() : new Soldier();
       this.unitList.push(randomUnit);
     }
+
+    this.timeLeftForAttack = this.rechargeTime();
   }
 
   calculateAttack() {
@@ -47,15 +49,19 @@ class Squad {
     }
   }
 
+  isActive() {
+    return this.unitList.length > 0;
+  }
+
+  rechargeTime() {
+    const [slowestTime] = this.unitList
+      .sort((current, next) => next.recharge - current.recharge);
+    return slowestTime.recharge;
+  }
+
   increaseSquadExperience() {
     this.unitList.forEach(unit => unit.increaseSoldierExperience());
   }
 }
-
-const newSquad = new Squad('strongest', 5)
-console.log(require('util').inspect(newSquad, { colors: true, depth: null }));
-newSquad.increaseSquadExperience();
-console.log(require('util').inspect(newSquad, { colors: true, depth: null }));
-
 
 module.exports = Squad;
