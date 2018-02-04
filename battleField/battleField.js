@@ -1,5 +1,6 @@
 const Army = require('./army');
 const { generateRandomNumber, writeToBattleLog, clearBattleLog } = require('../util/helperFunctions');
+const battleLogMessages = require('../util/battleLogMessages');
 
 /**
  * 
@@ -36,7 +37,7 @@ class Battlefield {
    * @memberof Battlefield
    */
   startSimulator() {
-    let numberOfTurns = 1;
+    let numberOfTurns = 0;
     clearBattleLog();
 
     while (!this.victoryCondition()) {
@@ -47,9 +48,13 @@ class Battlefield {
       const enemySquads = restOfTheSquads.filter(squad => attackingSquad.armyId !== squad.armyId);
       const defendingSquad = attackingSquad.chooseEnemy(enemySquads);
 
+      writeToBattleLog(battleLogMessages.squadAttacking(attackingSquad, defendingSquad));
+
       if (attackingSquad.calculateAttack() > defendingSquad.calculateAttack()) {
         // Apply damage to the enemy Squad
         defendingSquad.getHit(attackingSquad.calculateDamage());
+
+        writeToBattleLog(battleLogMessages.squadGetsHit(attackingSquad.calculateDamage()));
 
         // Increase Soldier experience across the attacking Squad
         attackingSquad.increaseSquadExperience();
@@ -68,8 +73,7 @@ class Battlefield {
     }
 
     const [{ armyId }] = this.squads;
-    writeToBattleLog(`Number of turns taken: ${numberOfTurns}`)
-    writeToBattleLog(`THE WINNER IS ARMY WITH ID OF: ${armyId}`)
+    writeToBattleLog(battleLogMessages.endOfSimulation(numberOfTurns, armyId));
   }
 
   /**

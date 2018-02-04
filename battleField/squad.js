@@ -1,7 +1,7 @@
 const Vehicle = require('../units/vehicle');
 const Soldier = require('../units/soldier');
-const { geometricAverage, generateRandomNumber } = require('../util/helperFunctions');
-
+const { geometricAverage, generateRandomNumber, writeToBattleLog } = require('../util/helperFunctions');
+const battleLogMessages = require('../util/battleLogMessages');
 /**
  * 
  * @class Squad
@@ -86,7 +86,11 @@ class Squad {
    * @memberof Squad
    */
   isActive() {
-    return this.unitList.length > 0;
+    if (this.unitList.length > 0) {
+      return true;
+    }
+    writeToBattleLog(battleLogMessages.squadDestroyed());
+    return false
   }
 
   /**
