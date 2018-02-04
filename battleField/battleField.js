@@ -1,5 +1,5 @@
 const Army = require('./army');
-const { generateRandomNumber, writeToBattleLog, clearBattleLog } = require('./helperFunctions');
+const { generateRandomNumber, writeToBattleLog, clearBattleLog } = require('../util/helperFunctions');
 
 class Battlefield {
   constructor(...armies) {
@@ -64,10 +64,4 @@ class Battlefield {
   }
 }
 
-const battleField = new Battlefield(
-  new Army('strongest', 10, 10, 10, 10, 10),
-  new Army('weakest', 5, 7),
-  new Army('weakest', 5, 9),
-);
-
-battleField.startSimulator();
+module.exports = Battlefield;

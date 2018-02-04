@@ -1,6 +1,6 @@
-const Vehicle = require('./vehicle');
-const Soldier = require('./soldier');
-const { geometricAverage, generateRandomNumber } = require('./helperFunctions');
+const Vehicle = require('../units/vehicle');
+const Soldier = require('../units/soldier');
+const { geometricAverage, generateRandomNumber } = require('../util/helperFunctions');
 
 class Squad {
   constructor(strategy, numberOfUnits) {
@@ -20,6 +20,10 @@ class Squad {
       this.unitList.push(randomUnit);
     }
 
+    this.totalSquadHealth = this.unitList.length * 100;
+    this.experiencePerUnit = 0;
+    this.numberOfUnits = this.unitList.length;
+    this.totalSquadDamage = this.calculateDamage();
   }
 
   calculateAttack() {
@@ -42,6 +46,9 @@ class Squad {
 
     // Remove units with no health points left
     this.unitList = this.unitList.filter(unit => unit.isActive());
+
+    // Refresh Squad stats
+    this.refreshSquadStats();
   }
 
   isActive() {
@@ -50,6 +57,7 @@ class Squad {
 
   decreaseTimeLeftToAttack(passedTime) {
     this.unitList.forEach(unit => unit.timeLeftToAttack -= passedTime);
+
   }
 
   resetTimeLeftToAttack() {
@@ -64,6 +72,14 @@ class Squad {
 
   increaseSquadExperience() {
     this.unitList.forEach(unit => unit.increaseSoldierExperience());
+    this.refreshSquadStats();
+  }
+
+  refreshSquadStats() {
+    this.totalSquadHealth = this.unitList.reduce((totalHP, unit) => totalHP + unit.health, 0);
+    this.experiencePerUnit = this.unitList.reduce((totalExp, unit) => totalExp + unit.experience, 0);
+    this.numberOfUnits = this.unitList.length;
+    this.totalSquadDamage = this.calculateDamage();
   }
 
   sortEnemySquadsByStrength(enemySquads) {

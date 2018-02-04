@@ -1,5 +1,5 @@
 const Squad = require('./squad');
-const { generateRandomNumber } = require('./helperFunctions');
+const { generateRandomNumber } = require('../util/helperFunctions');
 
 class Army {
   constructor(strategy, ...unitsPerSquad) {

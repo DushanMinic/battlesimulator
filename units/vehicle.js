@@ -1,6 +1,6 @@
 const Unit = require('./unit');
 const Soldier = require('./soldier');
-const { geometricAverage, generateRandomNumber } = require('./helperFunctions');
+const { geometricAverage, generateRandomNumber } = require('../util/helperFunctions');
 
 class Vehicle extends Unit {
   constructor(numberOfOperators = generateRandomNumber(1, 3), recharge = generateRandomNumber(1000, 2000)) {
@@ -69,6 +69,7 @@ class Vehicle extends Unit {
 
   increaseSoldierExperience() {
     this.vehicleOperators.forEach(unit => unit.increaseSoldierExperience());
+    this.experience += this.vehicleOperators.length;
   }
 }
 

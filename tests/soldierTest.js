@@ -1,5 +1,5 @@
 var assert = require('assert');
-const Soldier = require('../soldier');
+const Soldier = require('../units/soldier');
 
 describe('Soldier tests', () => {
   it('Should create new Soldier with 200ms recharge time and check his primary stats', () => {

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const Vehicle = require('../vehicle');
+const Vehicle = require('../units/vehicle');
 
 describe('Vehicle tests', () => {
   it('Should create new Vehicle with 3 Vehicle operators, 1100 recharge time and check its primary stats', () => {

@@ -1,5 +1,5 @@
 const Unit = require('./unit');
-const { generateRandomNumber } = require('./helperFunctions');
+const { generateRandomNumber } = require('../util/helperFunctions');
 
 class Soldier extends Unit {
   constructor(recharge = generateRandomNumber(100, 2000)) {
@@ -7,7 +7,6 @@ class Soldier extends Unit {
       throw new Error('Soldier recharge must be between 100 and 2000');
     }
     super(recharge);
-    this.experience = 0;
   }
 
   calculateAttack() {
