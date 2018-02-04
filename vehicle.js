@@ -57,16 +57,14 @@ class Vehicle extends Unit {
         // Decrement Vehicle Operator health
         vehicleOperator.health -= unluckyGuyIndex === i ? damageToUnluckyGuy : restOfTheDamagePerOperator;
       }
+
       // Deal damage to vehicle
       this.health -= damageToVehicle;
     }
 
     // Remove innactive Vehicle Operators
-    for (let i = this.vehicleOperators.length - 1; i >= 0; i -= 1) {
-      if (!this.vehicleOperators[i].isActive()) {
-        this.vehicleOperators.splice(i, 1);
-      }
-    }
+    this.vehicleOperators = this.vehicleOperators
+      .filter(operator => operator.isActive());
   }
 
   increaseSoldierExperience() {

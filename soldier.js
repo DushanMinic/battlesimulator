@@ -20,6 +20,9 @@ class Soldier extends Unit {
 
   getHit(totalDamage) {
     this.health -= totalDamage;
+    if (this.health < 0) {
+      this.health = 0;
+    }
   }
 
   isActive() {

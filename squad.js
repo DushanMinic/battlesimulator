@@ -37,15 +37,11 @@ class Squad {
   getHit(totalDamage) {
     const damagePerUnit = totalDamage / this.unitList.length;
 
-    for (let i = this.unitList.length - 1; i >= 0; i -= 1) {
-      const unit = this.unitList[i];
-      // Decrement units health
-      unit.getHit(damagePerUnit);
-      // Remove unit if it has no health points
-      if (!unit.isActive()) {
-        this.unitList.splice(i, 1);
-      }
-    }
+    // Deal damage to each unit in squad
+    this.unitList.forEach(unit => unit.getHit(damagePerUnit));
+
+    // Remove units with no health points left
+    this.unitList = this.unitList.filter(unit => unit.isActive());
   }
 
   isActive() {

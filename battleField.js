@@ -1,5 +1,5 @@
 const Army = require('./army');
-const { generateRandomNumber } = require('./helperFunctions');
+const { generateRandomNumber, writeToBattleLog, clearBattleLog } = require('./helperFunctions');
 
 class Battlefield {
   constructor(...armies) {
@@ -11,7 +11,7 @@ class Battlefield {
       throw new Error('Invalid Army');
     }
 
-    // Group all Army squads in one place, add Army ID and sort by lowest recharge time
+    // Group all Army squads in one place and assign Army Id
     this.squads = armies
       .reduce((totalSquads, currentArmy, i) => {
         currentArmy.squads.forEach(squad => squad.armyId = i + 1);
@@ -23,6 +23,7 @@ class Battlefield {
 
   startSimulator() {
     let numberOfTurns = 0;
+    clearBattleLog();
 
     while (!this.victoryCondition()) {
       this.squads = this.squads
@@ -32,8 +33,6 @@ class Battlefield {
       const enemySquads = restOfTheSquads.filter(squad => firstSquadToAttack.armyId !== squad.armyId);
       // for testing purposes only, until strategies implemented
       const [randomEnemy] = enemySquads;
-
-      const testArmy = this.squads.filter(squad => squad.armyId === 3).length;
 
       if (firstSquadToAttack.calculateAttack() > randomEnemy.calculateAttack()) {
         // Apply damage to the enemy Squad
@@ -54,9 +53,10 @@ class Battlefield {
 
       numberOfTurns++;
     }
-    console.log(`Number of turns taken: ${numberOfTurns}`);
+
     const [{ armyId }] = this.squads;
-    console.log(`THE WINNER IS ARMY WITH ID OF: ${armyId}`);
+    writeToBattleLog(`Number of turns taken: ${numberOfTurns}`)
+    writeToBattleLog(`THE WINNER IS ARMY WITH ID OF: ${armyId}`)
   }
 
   victoryCondition() {
@@ -66,8 +66,8 @@ class Battlefield {
 }
 
 const battleField = new Battlefield(
-  new Army('weakest', 5),
-  new Army('weakest', 1),
+  new Army('weakest', 5, 7),
+  new Army('weakest', 5, 9),
   new Army('strongest', 10, 10, 10, 10, 10),
 );
 
