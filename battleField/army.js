@@ -1,7 +1,17 @@
 const Squad = require('./squad');
 const { generateRandomNumber } = require('../util/helperFunctions');
 
+/**
+ * 
+ * @class Army
+ */
 class Army {
+  /**
+   * Creates an instance of Army.
+   * @param {('random' | 'weakest' | 'strongest')} strategy Strategy to apply in all Army squads
+   * @param {...number} unitsPerSquad Number of units per Squad, minimum of 2
+   * @memberof Army
+   */
   constructor(strategy, ...unitsPerSquad) {
     const allowedStrategies = ['random', 'weakest', 'strongest'];
 

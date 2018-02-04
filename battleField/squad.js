@@ -2,7 +2,17 @@ const Vehicle = require('../units/vehicle');
 const Soldier = require('../units/soldier');
 const { geometricAverage, generateRandomNumber } = require('../util/helperFunctions');
 
+/**
+ * 
+ * @class Squad
+ */
 class Squad {
+  /**
+   * Creates an instance of Squad.
+   * @param {('weakest' | 'strongest' | 'random')} strategy Available Squad strategies
+   * @param {number} numberOfUnits Number of units to create in a Squad, min 5, max 10
+   * @memberof Squad
+   */
   constructor(strategy, numberOfUnits) {
     if (!Number.isInteger(numberOfUnits)) {
       throw new Error('Number of units must be an integer');
@@ -26,6 +36,12 @@ class Squad {
     this.totalSquadDamage = this.calculateDamage();
   }
 
+  /**
+   * Calculates the attack success probabilty of a Squad
+   * 
+   * @returns {number} Squad chance to hit
+   * @memberof Squad
+   */
   calculateAttack() {
     const squadProductAttack = this.unitList
       .reduce((total, current) => total * current.calculateAttack(), 1);
@@ -33,11 +49,23 @@ class Squad {
     return geometricAverage(squadProductAttack, this.unitList.length);
   }
 
+  /**
+   * Calculates the damage of the Squad
+   * 
+   * @returns {number} Amount of damage Squad can deal
+   * @memberof Squad
+   */
   calculateDamage() {
     return this.unitList
       .reduce((total, current) => total + current.calculateDamage(), 0);
   }
 
+  /**
+   * Decrements health of all units in a Squad respectively
+   * 
+   * @param {number} totalDamage Amount of damage Squad units will receieve respectively
+   * @memberof Squad
+   */
   getHit(totalDamage) {
     const damagePerUnit = totalDamage / this.unitList.length;
 
@@ -51,30 +79,62 @@ class Squad {
     this.refreshSquadStats();
   }
 
+  /**
+   * Returns whether Squad is active
+   * 
+   * @returns {boolean}
+   * @memberof Squad
+   */
   isActive() {
     return this.unitList.length > 0;
   }
 
+  /**
+   * Decreases time left to attack for all units accross Squad
+   * 
+   * @param {number} passedTime Time passed of the attacking Squad
+   * @memberof Squad
+   */
   decreaseTimeLeftToAttack(passedTime) {
     this.unitList.forEach(unit => unit.timeLeftToAttack -= passedTime);
-
   }
 
+  /**
+   * Resets the Squad units time left to attack to default
+   * 
+   * @memberof Squad
+   */
   resetTimeLeftToAttack() {
     this.unitList.forEach(unit => unit.timeLeftToAttack = unit.recharge)
   }
 
+  /**
+   * Calculates the Squad time left to attack based on its slowest unit
+   * 
+   * @returns {number} Time required for Squad to attack
+   * @memberof Squad
+   */
   getSquadTimeLeftToAttack() {
     const [slowestTime] = this.unitList
       .sort((current, next) => next.timeLeftToAttack - current.timeLeftToAttack);
     return slowestTime.timeLeftToAttack;
   }
 
+  /**
+   * Increases the units experience across the squad
+   * 
+   * @memberof Squad
+   */
   increaseSquadExperience() {
     this.unitList.forEach(unit => unit.increaseSoldierExperience());
     this.refreshSquadStats();
   }
 
+  /**
+   * Refreshes Squads stats (total Squad health, experience per unit, number of units, total Squad damage)
+   * 
+   * @memberof Squad
+   */
   refreshSquadStats() {
     this.totalSquadHealth = this.unitList.reduce((totalHP, unit) => totalHP + unit.health, 0);
     this.experiencePerUnit = this.unitList.reduce((totalExp, unit) => totalExp + unit.experience, 0);
@@ -82,6 +142,13 @@ class Squad {
     this.totalSquadDamage = this.calculateDamage();
   }
 
+  /**
+   * Sorts enemy Squads based on their strength (from strongest to weakest)
+   * 
+   * @param {object[]} enemySquads Enemy squads
+   * @returns {object[]} List of enemy squads sorted by strength
+   * @memberof Squad
+   */
   sortEnemySquadsByStrength(enemySquads) {
     return enemySquads.sort((currentSquad, nextSquad) => {
       if (nextSquad.totalSquadHealth === currentSquad.totalSquadHealth) {
@@ -100,6 +167,13 @@ class Squad {
     });
   }
 
+  /**
+   * Selects enemy based on strategy of the Ssquad
+   * 
+   * @param {object[]} enemySquads List of enemy squads to select from
+   * @returns {object[]} Single enemy squad
+   * @memberof Squad
+   */
   chooseEnemy(enemySquads) {
     switch (this.strategy) {
       case 'strongest':

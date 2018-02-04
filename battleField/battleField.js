@@ -1,7 +1,16 @@
 const Army = require('./army');
 const { generateRandomNumber, writeToBattleLog, clearBattleLog } = require('../util/helperFunctions');
 
+/**
+ * 
+ * @class Battlefield
+ */
 class Battlefield {
+  /**
+   * Creates an instance of Battlefield.
+   * @param {...Army} armies Instances of Armies to add into Battlefield
+   * @memberof Battlefield
+   */
   constructor(...armies) {
     if (armies.length < 2) {
       throw new Error('Battlefield requires at least 2 armies');
@@ -21,6 +30,11 @@ class Battlefield {
 
   }
 
+  /**
+   * Starts the Battlefield simulator. It lasts until there is only one Army left
+   * 
+   * @memberof Battlefield
+   */
   startSimulator() {
     let numberOfTurns = 1;
     clearBattleLog();
@@ -44,7 +58,7 @@ class Battlefield {
       // Decrease the time to attack of the rest of the Squads by the recharge time of Squad that was attacking
       const passedTime = attackingSquad.getSquadTimeLeftToAttack();
       restOfTheSquads.forEach(squad => squad.decreaseTimeLeftToAttack(passedTime));
-      // attacking squad should reset time left to attack
+      // Attacking squad should reset time left to attack
       attackingSquad.resetTimeLeftToAttack();
 
       // Filter defeated Squads out of the Battlefield
@@ -58,6 +72,12 @@ class Battlefield {
     writeToBattleLog(`THE WINNER IS ARMY WITH ID OF: ${armyId}`)
   }
 
+  /**
+   * Returns whether victory conditions are met
+   * 
+   * @returns {boolean}
+   * @memberof Battlefield
+   */
   victoryCondition() {
     const [firstSquad] = this.squads;
     return this.squads.every(squad => squad.armyId === firstSquad.armyId);

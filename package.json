@@ -2,7 +2,7 @@
   "name": "battlesimulator-tradecore",
   "version": "1.0.0",
   "description": "",
-  "main": "army.js",
+  "main": "battleSimulator.js",
   "directories": {
     "test": "tests"
   },
