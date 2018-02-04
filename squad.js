@@ -65,6 +65,35 @@ class Squad {
   increaseSquadExperience() {
     this.unitList.forEach(unit => unit.increaseSoldierExperience());
   }
+
+  sortEnemySquadsByStrength(enemySquads) {
+    return enemySquads.sort((currentSquad, nextSquad) => {
+      if (nextSquad.totalSquadHealth === currentSquad.totalSquadHealth) {
+        if (nextSquad.experiencePerUnit === currentSquad.experiencePerUnit) {
+          if (nextSquad.numberOfUnits === currentSquad.numberOfUnits) {
+            if (nextSquad.totalSquadDamage === currentSquad.totalSquadDamage) {
+              return -1;
+            }
+            return nextSquad.totalSquadDamage - currentSquad.totalSquadDamage;
+          }
+          return nextSquad.numberOfUnits - currentSquad.numberOfUnits;
+        }
+        return nextSquad.experiencePerUnit - currentSquad.experiencePerUnit;
+      }
+      return nextSquad.totalSquadHealth - currentSquad.totalSquadHealth;
+    });
+  }
+
+  chooseEnemy(enemySquads) {
+    switch (this.strategy) {
+      case 'strongest':
+        return this.sortEnemySquadsByStrength(enemySquads)[0];
+      case 'weakest':
+        return this.sortEnemySquadsByStrength(enemySquads)[enemySquads.length - 1];
+      default:
+        return enemySquads[generateRandomNumber(0, enemySquads.length - 1)];
+    }
+  }
 }
 
 module.exports = Squad;
