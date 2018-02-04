@@ -1,0 +1,27 @@
+{
+  "name": "battlesimulator-tradecore",
+  "version": "1.0.0",
+  "description": "",
+  "main": "army.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^5.0.0"
+  },
+  "scripts": {
+    "test": "mocha tests --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DushanMinic/battlesimulator-tradecore.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DushanMinic/battlesimulator-tradecore/issues"
+  },
+  "homepage": "https://github.com/DushanMinic/battlesimulator-tradecore#readme"
+}
