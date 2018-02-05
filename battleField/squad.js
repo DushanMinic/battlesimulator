@@ -2,8 +2,10 @@ const Vehicle = require('../units/vehicle');
 const Soldier = require('../units/soldier');
 const { geometricAverage, generateRandomNumber, writeToBattleLog } = require('../util/helperFunctions');
 const battleLogMessages = require('../util/battleLogMessages');
+const StrategyFactory = require('../strategy/strategyFactory');
+
 /**
- * 
+ *
  * @class Squad
  */
 class Squad {
@@ -13,7 +15,7 @@ class Squad {
    * @param {number} numberOfUnits Number of units to create in a Squad, min 5, max 10
    * @memberof Squad
    */
-  constructor(strategy, numberOfUnits) {
+  constructor(strategyType, numberOfUnits) {
     if (!Number.isInteger(numberOfUnits)) {
       throw new Error('Number of units must be an integer');
     }
@@ -22,7 +24,7 @@ class Squad {
       throw new Error('Squad units number must be between 5 and 10');
     }
 
-    this.strategy = strategy;
+    this.strategy = StrategyFactory.createStrategy(strategyType);
     this.unitList = [];
 
     for (let i = 0; i < numberOfUnits; i += 1) {
@@ -38,7 +40,7 @@ class Squad {
 
   /**
    * Calculates the attack success probabilty of a Squad
-   * 
+   *
    * @returns {number} Squad chance to hit
    * @memberof Squad
    */
@@ -51,7 +53,7 @@ class Squad {
 
   /**
    * Calculates the damage of the Squad
-   * 
+   *
    * @returns {number} Amount of damage Squad can deal
    * @memberof Squad
    */
@@ -62,7 +64,7 @@ class Squad {
 
   /**
    * Decrements health of all units in a Squad respectively
-   * 
+   *
    * @param {number} totalDamage Amount of damage Squad units will receieve respectively
    * @memberof Squad
    */
@@ -81,7 +83,7 @@ class Squad {
 
   /**
    * Returns whether Squad is active
-   * 
+   *
    * @returns {boolean}
    * @memberof Squad
    */
@@ -90,12 +92,12 @@ class Squad {
       return true;
     }
     writeToBattleLog(battleLogMessages.squadDestroyed());
-    return false
+    return false;
   }
 
   /**
    * Decreases time left to attack for all units accross Squad
-   * 
+   *
    * @param {number} passedTime Time passed of the attacking Squad
    * @memberof Squad
    */
@@ -105,7 +107,7 @@ class Squad {
 
   /**
    * Resets the Squad units time left to attack to default
-   * 
+   *
    * @memberof Squad
    */
   resetTimeLeftToAttack() {
@@ -114,7 +116,7 @@ class Squad {
 
   /**
    * Calculates the Squad time left to attack based on its slowest unit
-   * 
+   *
    * @returns {number} Time required for Squad to attack
    * @memberof Squad
    */
@@ -126,7 +128,7 @@ class Squad {
 
   /**
    * Increases the units experience across the squad
-   * 
+   *
    * @memberof Squad
    */
   increaseSquadExperience() {
@@ -136,7 +138,7 @@ class Squad {
 
   /**
    * Refreshes Squads stats (total Squad health, experience per unit, number of units, total Squad damage)
-   * 
+   *
    * @memberof Squad
    */
   refreshSquadStats() {
@@ -147,46 +149,14 @@ class Squad {
   }
 
   /**
-   * Sorts enemy Squads based on their strength (from strongest to weakest)
-   * 
-   * @param {object[]} enemySquads Enemy squads
-   * @returns {object[]} List of enemy squads sorted by strength
-   * @memberof Squad
-   */
-  sortEnemySquadsByStrength(enemySquads) {
-    return enemySquads.sort((currentSquad, nextSquad) => {
-      if (nextSquad.totalSquadHealth === currentSquad.totalSquadHealth) {
-        if (nextSquad.experiencePerUnit === currentSquad.experiencePerUnit) {
-          if (nextSquad.numberOfUnits === currentSquad.numberOfUnits) {
-            if (nextSquad.totalSquadDamage === currentSquad.totalSquadDamage) {
-              return -1;
-            }
-            return nextSquad.totalSquadDamage - currentSquad.totalSquadDamage;
-          }
-          return nextSquad.numberOfUnits - currentSquad.numberOfUnits;
-        }
-        return nextSquad.experiencePerUnit - currentSquad.experiencePerUnit;
-      }
-      return nextSquad.totalSquadHealth - currentSquad.totalSquadHealth;
-    });
-  }
-
-  /**
    * Selects enemy based on strategy of the Ssquad
-   * 
+   *
    * @param {object[]} enemySquads List of enemy squads to select from
    * @returns {object[]} Single enemy squad
    * @memberof Squad
    */
   chooseEnemy(enemySquads) {
-    switch (this.strategy) {
-      case 'strongest':
-        return this.sortEnemySquadsByStrength(enemySquads)[0];
-      case 'weakest':
-        return this.sortEnemySquadsByStrength(enemySquads)[enemySquads.length - 1];
-      default:
-        return enemySquads[generateRandomNumber(0, enemySquads.length - 1)];
-    }
+    return this.strategy.chooseEnemy(enemySquads);
   }
 }
 

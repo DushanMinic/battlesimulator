@@ -1,9 +1,9 @@
 const Army = require('./army');
-const { generateRandomNumber, writeToBattleLog, clearBattleLog } = require('../util/helperFunctions');
+const { writeToBattleLog, clearBattleLog } = require('../util/helperFunctions');
 const battleLogMessages = require('../util/battleLogMessages');
 
 /**
- * 
+ *
  * @class Battlefield
  */
 class Battlefield {
@@ -28,12 +28,11 @@ class Battlefield {
         totalSquads.push(...currentArmy.squads);
         return totalSquads;
       }, []);
-
   }
 
   /**
    * Starts the Battlefield simulator. It lasts until there is only one Army left
-   * 
+   *
    * @memberof Battlefield
    */
   startSimulator() {
@@ -69,7 +68,7 @@ class Battlefield {
       // Filter defeated Squads out of the Battlefield
       this.squads = this.squads.filter(squad => squad.isActive());
 
-      numberOfTurns++;
+      numberOfTurns += 1;
     }
 
     const [{ armyId }] = this.squads;
@@ -78,7 +77,7 @@ class Battlefield {
 
   /**
    * Returns whether victory conditions are met
-   * 
+   *
    * @returns {boolean}
    * @memberof Battlefield
    */

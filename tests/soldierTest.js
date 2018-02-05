@@ -1,4 +1,4 @@
-var assert = require('assert');
+const assert = require('assert');
 const Soldier = require('../units/soldier');
 
 describe('Soldier tests', () => {

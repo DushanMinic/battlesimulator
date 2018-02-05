@@ -2,7 +2,7 @@ const Unit = require('./unit');
 const { generateRandomNumber } = require('../util/helperFunctions');
 
 /**
- * 
+ *
  * @class Soldier
  * @extends {Unit}
  */
@@ -21,7 +21,7 @@ class Soldier extends Unit {
 
   /**
    * Calculates the attack probabilty of Soldier unit
-   * 
+   *
    * @returns {number} Chance to hit another unit
    * @memberof Soldier
    */
@@ -31,7 +31,7 @@ class Soldier extends Unit {
 
   /**
    * Calculates the damage of Soldier unit
-   * 
+   *
    * @returns {number} Amount of damage Soldier unit can do
    * @memberof Soldier
    */
@@ -41,7 +41,7 @@ class Soldier extends Unit {
 
   /**
    * Decrements Soldier health by the damage received
-   * 
+   *
    * @param {number} totalDamage Amount of the damage for Soldier unit to receive
    * @memberof Soldier
    */
@@ -54,7 +54,7 @@ class Soldier extends Unit {
 
   /**
    * Returns Boolean on whether Soldier is active
-   * 
+   *
    * @returns {boolean}
    * @memberof Soldier
    */
@@ -64,7 +64,7 @@ class Soldier extends Unit {
 
   /**
    * Increases Soldier experience by 1, up to 50
-   * 
+   *
    * @memberof Soldier
    */
   increaseSoldierExperience() {
