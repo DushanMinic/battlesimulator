@@ -11,7 +11,7 @@ const StrategyFactory = require('../strategy/strategyFactory');
 class Squad {
   /**
    * Creates an instance of Squad.
-   * @param {('weakest' | 'strongest' | 'random')} strategy Available Squad strategies
+   * @param {string} strategy Squad strategies
    * @param {number} numberOfUnits Number of units to create in a Squad, min 5, max 10
    * @memberof Squad
    */
@@ -69,6 +69,8 @@ class Squad {
    * @memberof Squad
    */
   getHit(totalDamage) {
+    writeToBattleLog(battleLogMessages.squadGetsHit(totalDamage));
+
     const damagePerUnit = totalDamage / this.unitList.length;
 
     // Deal damage to each unit in squad
@@ -79,6 +81,10 @@ class Squad {
 
     // Refresh Squad stats
     this.refreshSquadStats();
+
+    if (!this.isActive()) {
+      writeToBattleLog(battleLogMessages.squadDestroyed());
+    }
   }
 
   /**
@@ -88,11 +94,7 @@ class Squad {
    * @memberof Squad
    */
   isActive() {
-    if (this.unitList.length > 0) {
-      return true;
-    }
-    writeToBattleLog(battleLogMessages.squadDestroyed());
-    return false;
+    return this.unitList.length > 0;
   }
 
   /**
@@ -157,6 +159,82 @@ class Squad {
    */
   chooseEnemy(enemySquads) {
     return this.strategy.chooseEnemy(enemySquads);
+  }
+
+  /**
+   * Find enemy squad to attack
+   *
+   * @param {Battlefield} battleField Battlefield of squads
+   * @returns {boolean} Returns true if there are no enemy squads to hit
+   * @memberof Squad
+   */
+  seekAndDestroy(battleField) {
+    const enemySquads = battleField.squads.filter(squad => this.armyId !== squad.armyId);
+
+    if (!enemySquads.length) {
+      return true;
+    }
+
+    const defendingSquad = this.chooseEnemy(enemySquads);
+
+    writeToBattleLog(battleLogMessages.squadAttacking(this, defendingSquad));
+
+    if (this.calculateAttack() > defendingSquad.calculateAttack()) {
+
+      // Apply damage to the enemy Squad
+      defendingSquad.getHit(this.calculateDamage());
+
+      // Increase Soldier experience across the attacking Squad
+      this.increaseSquadExperience();
+    }
+
+    // Attacking squad should reset time left to attack
+    this.resetTimeLeftToAttack();
+
+    // Filter defeated Squads out of the Battlefield
+    battleField.squads = battleField.squads.filter(squad => squad.isActive());
+
+    return battleField.victoryCondition();
+  }
+
+  /**
+   * Starts the battle for Squad
+   *
+   * @param {Battlefield} battleField Battlefield of squads
+   * @returns {Promise}
+   * @memberof Squad
+   */
+  async startBattle(battleField) {
+    const passedTime = this.getSquadTimeLeftToAttack();
+
+    await this.delay(passedTime / battleField.timeScale);
+
+    if (!this.isActive()) {
+      return false;
+    }
+
+    const victory = this.seekAndDestroy(battleField);
+
+    if (victory) {
+      return true;
+    }
+
+    return this.startBattle(battleField);
+  }
+
+  /**
+   * Delays the time in battlefield
+   *
+   * @param {number} ms Number of milliseconds to delay the Squad time
+   * @returns {Promise}
+   * @memberof Squad
+   */
+  delay(ms) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
   }
 }
 

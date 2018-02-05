@@ -9,10 +9,15 @@ const battleLogMessages = require('../util/battleLogMessages');
 class Battlefield {
   /**
    * Creates an instance of Battlefield.
+   * @param {number} [timeScale=1] Time scale speed of battlefield, 1 is realtime, the higher the faster simulation goes
    * @param {...Army} armies Instances of Armies to add into Battlefield
    * @memberof Battlefield
    */
-  constructor(...armies) {
+  constructor(timeScale = 1, ...armies) {
+    if (timeScale <= 0) {
+      throw new Error('Time scale must be greater than zero');
+    }
+
     if (armies.length < 2) {
       throw new Error('Battlefield requires at least 2 armies');
     }
@@ -20,6 +25,8 @@ class Battlefield {
     if (!armies.every(army => army instanceof Army)) {
       throw new Error('Invalid Army');
     }
+
+    this.timeScale = timeScale;
 
     // Group all Army squads in one place and assign Army Id
     this.squads = armies
@@ -35,44 +42,13 @@ class Battlefield {
    *
    * @memberof Battlefield
    */
-  startSimulator() {
-    let numberOfTurns = 0;
+  async startSimulator() {
     clearBattleLog();
 
-    while (!this.victoryCondition()) {
-      this.squads = this.squads
-        .sort((currentSquad, nextSquad) => currentSquad.getSquadTimeLeftToAttack() - nextSquad.getSquadTimeLeftToAttack());
-
-      const [attackingSquad, ...restOfTheSquads] = this.squads;
-      const enemySquads = restOfTheSquads.filter(squad => attackingSquad.armyId !== squad.armyId);
-      const defendingSquad = attackingSquad.chooseEnemy(enemySquads);
-
-      writeToBattleLog(battleLogMessages.squadAttacking(attackingSquad, defendingSquad));
-
-      if (attackingSquad.calculateAttack() > defendingSquad.calculateAttack()) {
-        // Apply damage to the enemy Squad
-        defendingSquad.getHit(attackingSquad.calculateDamage());
-
-        writeToBattleLog(battleLogMessages.squadGetsHit(attackingSquad.calculateDamage()));
-
-        // Increase Soldier experience across the attacking Squad
-        attackingSquad.increaseSquadExperience();
-      }
-
-      // Decrease the time to attack of the rest of the Squads by the recharge time of Squad that was attacking
-      const passedTime = attackingSquad.getSquadTimeLeftToAttack();
-      restOfTheSquads.forEach(squad => squad.decreaseTimeLeftToAttack(passedTime));
-      // Attacking squad should reset time left to attack
-      attackingSquad.resetTimeLeftToAttack();
-
-      // Filter defeated Squads out of the Battlefield
-      this.squads = this.squads.filter(squad => squad.isActive());
-
-      numberOfTurns += 1;
-    }
+    await Promise.all(this.squads.map(squad => squad.startBattle(this)));
 
     const [{ armyId }] = this.squads;
-    writeToBattleLog(battleLogMessages.endOfSimulation(numberOfTurns, armyId));
+    writeToBattleLog(battleLogMessages.endOfSimulation(armyId));
   }
 
   /**

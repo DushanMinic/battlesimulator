@@ -13,7 +13,7 @@ describe('Battlefield tests', () => {
     ), Error);
   });
 
-  it('Should simulate BattleField where most of the time Army with highest number of squads should win', () => {
+  it('Should simulate BattleField where most of the time Army with highest number of squads should win', (done) => {
     const newBattlefield = new Battlefield(
       new Army(
         { squadStrategy: STRATEGY_TYPE.STRONGEST, unitsPerSquad: 10 },
@@ -35,10 +35,14 @@ describe('Battlefield tests', () => {
       ),
     );
 
-    newBattlefield.startSimulator();
-    const winningArmy = newBattlefield.squads
-      .every(squad => squad.armyId === 1);
+    newBattlefield.startSimulator()
+      .then(() => {
+        const winningArmy = newBattlefield.squads
+          .every(squad => squad.armyId === 1);
 
-    assert.ok(winningArmy);
+        assert.ok(winningArmy);
+        done();
+      })
+      .catch(done);
   });
 });
